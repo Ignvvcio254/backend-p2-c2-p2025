@@ -1,5 +1,8 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 def inicio(request):
-    nombre = "Ignacio Navarrrete"
-    return HttpResponse(f"¡Bienvenido a mi primera app de django, {nombre}!")
+    nombre = "Ignacio Navarrete"
+    context = {
+        'nombre': nombre,
+    }
+    return render(request, 'bienvenida/inicio.html', context)

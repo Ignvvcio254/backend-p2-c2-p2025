@@ -5,112 +5,182 @@
 {% block header %}Lista de Productos{% endblock %}
 
 {% block breadcrumb %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'inicio' %}">Inicio</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Productos</li>
+<nav class="flex mb-4" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="{% url 'inicio' %}" class="text-gray-500 hover:text-purple-600 inline-flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                Inicio
+            </a>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-400 ml-1 md:ml-2 font-medium">Productos</span>
+            </div>
+        </li>
     </ol>
 </nav>
 {% endblock %}
 
 {% block content %}
-<div class="row mb-3">
-    <div class="col">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <p class="text-muted mb-0">Total de productos: <strong>{{ object_list.count }}</strong></p>
-            </div>
-            <div>
-                <a href="{% url 'producto_create' %}" class="btn btn-success">
-                    <i class="bi bi-plus-circle me-1"></i>Nuevo Producto
-                </a>
-            </div>
-        </div>
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+    <div>
+        <p class="text-gray-600">Total de productos: <span class="font-semibold text-gray-900">{{ object_list.count }}</span></p>
+    </div>
+    <div>
+        <a href="{% url 'producto_create' %}" class="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 inline-flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Nuevo Producto
+        </a>
     </div>
 </div>
 
 {% if object_list %}
-    <div class="row">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for producto in object_list %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="{% url 'producto_detail' producto.pk %}" class="text-decoration-none">
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-purple-600 transition-colors">
+                            <a href="{% url 'producto_detail' producto.pk %}" class="no-underline">
                                 {{ producto.nombre }}
                             </a>
-                        </h5>
-                        <p class="card-text text-muted">
-                            {% if producto.descripcion %}
-                                {{ producto.descripcion|truncatewords:15 }}
-                            {% else %}
-                                Sin descripción disponible
-                            {% endif %}
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="badge bg-primary">${{ producto.precio }}</span>
-                                <small class="text-muted">Stock: {{ producto.stock }}</small>
+                        </h3>
+                        {% if producto.activo %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Activo
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                Inactivo
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="text-gray-600 mb-4 line-clamp-3">
+                        {% if producto.descripcion %}
+                            {{ producto.descripcion|truncatewords:15 }}
+                        {% else %}
+                            <em class="text-gray-400">Sin descripción disponible</em>
+                        {% endif %}
+                    </p>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-4">
+                            <span class="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                ${{ producto.precio }}
+                            </span>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                </svg>
+                                Stock: {{ producto.stock }}
                             </div>
-                            <small class="text-muted">{{ producto.fecha_creacion|date:"d/m/Y" }}</small>
                         </div>
                     </div>
-                    <div class="card-footer bg-transparent">
-                        <div class="d-grid gap-2 d-md-block">
-                            <a href="{% url 'producto_detail' producto.pk %}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye me-1"></i>Ver
-                            </a>
-                            <a href="{% url 'producto_update' producto.pk %}" class="btn btn-outline-warning btn-sm">
-                                <i class="bi bi-pencil me-1"></i>Editar
-                            </a>
-                            <button type="button" class="btn btn-outline-danger btn-sm" 
-                                    onclick="confirmarEliminacion({{ producto.pk }}, '{{ producto.nombre|escapejs }}')">
-                                <i class="bi bi-trash me-1"></i>Eliminar
-                            </button>
-                        </div>
+                    
+                    <div class="text-xs text-gray-400 mb-6">
+                        Creado: {{ producto.fecha_creacion|date:"d/m/Y" }}
+                        {% if producto.fecha_actualizacion %}
+                            | Actualizado: {{ producto.fecha_actualizacion|date:"d/m/Y" }}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="px-6 pb-6">
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <a href="{% url 'producto_detail' producto.pk %}" 
+                           class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors text-center inline-flex items-center justify-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            Ver
+                        </a>
+                        <a href="{% url 'producto_update' producto.pk %}" 
+                           class="flex-1 bg-amber-100 hover:bg-amber-200 text-amber-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors text-center inline-flex items-center justify-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Editar
+                        </a>
+                        <button onclick="confirmarEliminacion({{ producto.pk }}, '{{ producto.nombre|escapejs }}')"
+                                class="flex-1 bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors text-center inline-flex items-center justify-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Eliminar
+                        </button>
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
 {% else %}
-    <div class="row">
-        <div class="col text-center">
-            <div class="card bg-light">
-                <div class="card-body py-5">
-                    <i class="bi bi-box display-1 text-muted mb-3"></i>
-                    <h3 class="text-muted">No hay productos registrados</h3>
-                    <p class="text-muted mb-4">Comienza agregando tu primer producto al inventario.</p>
-                    <a href="{% url 'producto_create' %}" class="btn btn-success">
-                        <i class="bi bi-plus-circle me-1"></i>Crear Primer Producto
-                    </a>
-                </div>
+    <div class="max-w-md mx-auto">
+        <div class="bg-white rounded-2xl shadow-lg border-2 border-dashed border-gray-200 p-12 text-center">
+            <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-gray-100 mb-6">
+                <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
             </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">No hay productos registrados</h3>
+            <p class="text-gray-600 mb-8">Comienza agregando tu primer producto al inventario para gestionar tu stock.</p>
+            <a href="{% url 'producto_create' %}" 
+               class="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white px-8 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 inline-flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Crear Primer Producto
+            </a>
         </div>
     </div>
 {% endif %}
 
 <!-- Modal de confirmación para eliminación -->
-<div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalEliminarLabel">Confirmar Eliminación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div id="modalEliminar" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-96 shadow-lg rounded-2xl bg-white">
+        <div class="mt-3">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
             </div>
-            <div class="modal-body">
-                <p>¿Estás seguro de que deseas eliminar el producto "<span id="nombreProducto"></span>"?</p>
-                <div class="alert alert-warning" role="alert">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Esta acción no se puede deshacer.
+            <h3 class="text-lg font-medium text-gray-900 text-center mb-2">Confirmar Eliminación</h3>
+            <p class="text-sm text-gray-500 text-center mb-1">
+                ¿Estás seguro de que deseas eliminar el producto
+            </p>
+            <p class="text-sm font-semibold text-gray-900 text-center mb-4">
+                "<span id="nombreProducto"></span>"?
+            </p>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-amber-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <p class="text-amber-800 text-sm font-medium">Esta acción no se puede deshacer</p>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form id="formEliminar" method="post" style="display: inline;">
+            <div class="flex gap-3 justify-center">
+                <button onclick="cerrarModal()" 
+                        class="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-medium rounded-lg transition-colors">
+                    Cancelar
+                </button>
+                <form id="formEliminar" method="post" class="inline">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i>Eliminar
+                    <button type="submit" 
+                            class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Eliminar
                     </button>
                 </form>
             </div>
@@ -127,9 +197,19 @@ function confirmarEliminacion(productId, nombreProducto) {
     document.getElementById('formEliminar').action = '{% url "producto_delete" 0 %}'.replace('0', productId);
     
     // Mostrar el modal
-    var modal = new bootstrap.Modal(document.getElementById('modalEliminar'));
-    modal.show();
+    document.getElementById('modalEliminar').classList.remove('hidden');
 }
+
+function cerrarModal() {
+    document.getElementById('modalEliminar').classList.add('hidden');
+}
+
+// Cerrar modal haciendo clic fuera de él
+document.getElementById('modalEliminar').addEventListener('click', function(e) {
+    if (e.target === this) {
+        cerrarModal();
+    }
+});
 
 // Manejar la eliminación con AJAX (opcional)
 document.getElementById('formEliminar').addEventListener('submit', function(e) {
@@ -150,7 +230,7 @@ document.getElementById('formEliminar').addEventListener('submit', function(e) {
     .then(data => {
         if (data.success) {
             // Cerrar modal y recargar página
-            bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
+            cerrarModal();
             location.reload();
         }
     })

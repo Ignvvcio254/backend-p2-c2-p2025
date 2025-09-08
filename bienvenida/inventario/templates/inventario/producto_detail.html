@@ -1,0 +1,313 @@
+{% extends 'inventario/base.html' %}
+
+{% block title %}{{ object.nombre }} - Inventario CRUD{% endblock %}
+
+{% block header %}Detalle del Producto{% endblock %}
+
+{% block breadcrumb %}
+<nav class="flex mb-4" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="{% url 'inicio' %}" class="text-gray-500 hover:text-purple-600 inline-flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                Inicio
+            </a>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <a href="{% url 'producto_list' %}" class="text-gray-500 hover:text-purple-600 ml-1 md:ml-2 font-medium">Productos</a>
+            </div>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-400 ml-1 md:ml-2 font-medium">{{ object.nombre }}</span>
+            </div>
+        </li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+        <!-- Información principal del producto -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-500 to-blue-600 px-6 py-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h2 class="text-2xl font-bold text-white flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        {{ object.nombre }}
+                    </h2>
+                    <div class="flex gap-2">
+                        <a href="{% url 'producto_update' object.pk %}" 
+                           class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Editar
+                        </a>
+                        <button onclick="confirmarEliminacion({{ object.pk }}, '{{ object.nombre|escapejs }}')" 
+                                class="bg-red-500 bg-opacity-80 hover:bg-opacity-100 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="p-8">
+                {% if object.descripcion %}
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                            Descripción
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-lg border-l-4 border-purple-500">{{ object.descripcion }}</p>
+                    </div>
+                {% endif %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-green-50 p-6 rounded-xl border border-green-200">
+                        <div class="flex items-center mb-3">
+                            <svg class="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold text-gray-900">Precio</h3>
+                        </div>
+                        <p class="text-3xl font-bold text-green-600">${{ object.precio }}</p>
+                    </div>
+                    <div class="{% if object.stock > 0 %}bg-blue-50 border-blue-200{% else %}bg-red-50 border-red-200{% endif %} p-6 rounded-xl border">
+                        <div class="flex items-center mb-3">
+                            <svg class="w-6 h-6 {% if object.stock > 0 %}text-blue-600{% else %}text-red-600{% endif %} mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold text-gray-900">Stock Disponible</h3>
+                        </div>
+                        {% if object.stock > 0 %}
+                            <p class="text-3xl font-bold text-blue-600">{{ object.stock }} unidades</p>
+                        {% else %}
+                            <p class="text-3xl font-bold text-red-600">Agotado</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            <h4 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fecha de Creación</h4>
+                        </div>
+                        <p class="text-lg font-medium text-gray-900">{{ object.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h4 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Última Actualización</h4>
+                        </div>
+                        <p class="text-lg font-medium text-gray-900">{{ object.fecha_actualizacion|date:"d/m/Y H:i" }}</p>
+                    </div>
+                </div>
+
+                {% if object.activo %}
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="font-semibold">Este producto está activo y disponible.</span>
+                    </div>
+                {% else %}
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-6 py-4 rounded-lg flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="font-semibold">Este producto está inactivo.</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-6">
+        <!-- Panel de acciones -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Acciones
+                </h3>
+            </div>
+            <div class="p-6">
+                <div class="space-y-3">
+                    <a href="{% url 'producto_update' object.pk %}" 
+                       class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-4 py-3 rounded-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Editar Producto
+                    </a>
+                    <button onclick="confirmarEliminacion({{ object.pk }}, '{{ object.nombre|escapejs }}')" 
+                            class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-3 rounded-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Eliminar Producto
+                    </button>
+                    <hr class="my-4 border-gray-200">
+                    <a href="{% url 'producto_list' %}" 
+                       class="w-full bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-300 hover:border-purple-500 px-4 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Volver a la Lista
+                    </a>
+                    <a href="{% url 'producto_create' %}" 
+                       class="w-full bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-300 hover:border-green-500 px-4 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Nuevo Producto
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    Información Técnica
+                </h3>
+            </div>
+            <div class="p-6">
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium text-gray-600">ID del Producto:</span>
+                        <span class="text-gray-900 font-mono bg-gray-100 px-2 py-1 rounded">#{{ object.pk }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium text-gray-600">Días desde creación:</span>
+                        <span class="text-gray-900">{{ object.fecha_creacion|timesince }}</span>
+                    </div>
+                    {% if object.fecha_actualizacion != object.fecha_creacion %}
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-600">Última modificación:</span>
+                            <span class="text-gray-900">{{ object.fecha_actualizacion|timesince }} atrás</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación para eliminación -->
+<div id="modalEliminar" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-96 shadow-lg rounded-2xl bg-white">
+        <div class="mt-3">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 text-center mb-2">Confirmar Eliminación</h3>
+            <p class="text-sm text-gray-500 text-center mb-1">
+                ¿Estás seguro de que deseas eliminar el producto
+            </p>
+            <p class="text-sm font-semibold text-gray-900 text-center mb-4">
+                "<span id="nombreProducto"></span>"?
+            </p>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-amber-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <p class="text-amber-800 text-sm font-medium">Esta acción no se puede deshacer</p>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-center">
+                <button onclick="cerrarModal()" 
+                        class="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-medium rounded-lg transition-colors">
+                    Cancelar
+                </button>
+                <form id="formEliminar" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" 
+                            class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function confirmarEliminacion(productId, nombreProducto) {
+    // Actualizar el modal con la información del producto
+    document.getElementById('nombreProducto').textContent = nombreProducto;
+    document.getElementById('formEliminar').action = '{% url "producto_delete" 0 %}'.replace('0', productId);
+    
+    // Mostrar el modal
+    document.getElementById('modalEliminar').classList.remove('hidden');
+}
+
+function cerrarModal() {
+    document.getElementById('modalEliminar').classList.add('hidden');
+}
+
+// Cerrar modal haciendo clic fuera de él
+document.getElementById('modalEliminar').addEventListener('click', function(e) {
+    if (e.target === this) {
+        cerrarModal();
+    }
+});
+
+// Teclas de acceso rápido
+document.addEventListener('keydown', function(e) {
+    // E para editar
+    if (e.key === 'e' || e.key === 'E') {
+        if (document.activeElement.tagName.toLowerCase() !== 'input' && 
+            document.activeElement.tagName.toLowerCase() !== 'textarea') {
+            window.location.href = '{% url "producto_update" object.pk %}';
+        }
+    }
+    
+    // Escape para volver a la lista o cerrar modal
+    if (e.key === 'Escape') {
+        if (!document.getElementById('modalEliminar').classList.contains('hidden')) {
+            cerrarModal();
+        } else {
+            window.location.href = '{% url "producto_list" %}';
+        }
+    }
+});
+</script>
+{% endblock %}
